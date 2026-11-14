@@ -768,9 +768,9 @@ class ControllerExtensionModuleGrowthcontour extends Controller
                 } else {
                     $reason = isset($data['error']) ? $data['error'] : (isset($data['reason']) ? $data['reason'] : '');
                     if ($reason === 'no_scope') {
-                        $reason = $this->language->get('error_import_scope');
+                        $reason = $this->language->get('error_imp_scope');
                         // Рядка немає в мовному файлі (інша мова адмінки) — зрозумілий текст замість ключа
-                        if ($reason === 'error_import_scope') {
+                        if ($reason === 'error_imp_scope') {
                             $reason = 'Ключ доступу не має права «Імпортувати товари з сайту». Увімкніть його в системі: Налаштування → Токени → редагування токена цього сайту.';
                         }
                     }

@@ -407,3 +407,86 @@ $_['column_imp_message']          = 'Details';
 $_['text_imp_preview']            = 'How It Will Appear in the System';
 $_['text_imp_none']               = 'No Data';
 $_['error_imp_scope']             = 'The access token does not have permission to "Import Products from Website". Enable this permission in the system under Settings → Tokens.';
+
+// ─── Support: extra blocks ───
+$_['icon_about_safe']            = 'fa-power-off';
+$_['text_about_safe_title']      = 'Safe Start';
+$_['text_about_safe']            = '<ul><li>After installation everything is disabled: orders, carts and catalog exchange do not work, and nothing changes on the website.</li><li>Enable the sections you need and click "Save" at the top of the page — all tabs are saved at once, without reloading.</li><li>"Missing from System" defaults to "Leave Unchanged": website products are neither disabled nor deleted.</li></ul>';
+$_['icon_about_import']          = 'fa-download';
+$_['text_about_import_title']    = 'Importing Website Products into the System';
+$_['text_about_import']          = '<ul><li>Transfers existing website products into the system: names, descriptions, SEO, prices, stock, codes, manufacturers, categories, images, attributes, options and related products.</li><li>Products are matched in the system by rules (link, SKU, model, EAN…) — a second website with the same products links to existing records instead of creating duplicates.</li><li>"Dry Run" shows the result in advance; a "Trial" import on a few products can be rolled back with one button.</li><li>A report for every product: what was created, linked, updated or skipped, and why.</li></ul>';
+$_['icon_about_delivery']        = 'fa-truck';
+$_['text_about_delivery_title']  = 'Delivery';
+$_['text_about_delivery']        = '<ul><li>At checkout the module saves a delivery snapshot: order, session and form fields — even if the shipping module (including an encrypted one) does not write them into the order.</li><li>Parsing rules determine the carrier, service type, city, branch or parcel locker. For Nova Poshta the ref is looked up in the website\'s Nova Poshta module tables.</li><li>Rules can be tested on any order, and existing orders can be re-parsed.</li></ul>';
+
+// ─── Connection Check (Settings tab) ───
+$_['entry_check_connection']   = 'Connection to System';
+$_['button_check_connection']  = 'Check Connection';
+$_['help_check_connection']    = 'Checks the system URL and access token from the fields above (works before saving): whether the system responds, whether the token is accepted and whether this website is allowed.';
+$_['text_check_ok']            = 'Connected: the system responded in %s ms, the token was accepted. Order statuses in the system: %s.';
+$_['error_check_empty']        = 'Fill in "System URL" and "System Access Token".';
+$_['error_check_domain']       = 'The system URL must start with https:// (e.g. https://demo.growthcontour.com).';
+$_['error_check_network']      = 'Cannot connect to %s: %s. Check the system URL and whether the website server can access the internet (firewall, SSL certificate).';
+$_['error_check_auth']         = 'The system rejected the request (HTTP %s): %s. Check the access token, its permissions and that this website\'s address is in the token\'s allowed domains.';
+$_['error_check_404']          = 'No system found at %s (HTTP 404). Check the URL — without a path at the end.';
+$_['error_check_http']         = 'The system returned HTTP error %s: %s';
+
+// ─── Send One Order (Orders tab) ───
+$_['entry_send_order']         = 'Single Order';
+$_['placeholder_send_order']   = 'Order ID';
+$_['button_send_order']        = 'Send';
+$_['help_send_order']          = 'Sends the website order with this ID to the system — new or again (after fixing an error). No duplicates are created.';
+$_['text_send_order_ok']       = 'Order #%s was sent and accepted by the system.';
+$_['text_send_order_dup']      = 'Order #%s already exists in the system — data updated, no duplicate created.';
+$_['error_send_order_missing'] = 'Order #%s was not found on the website.';
+$_['error_send_order_push']    = 'The website could not start the transfer (HTTP %s). Details: %s. HTTP 401 — the "System-to-Website Access Token" does not match; HTTP 0 — the server cannot reach itself (DNS, Cloudflare, firewall, SSL) — send the details to your hosting provider.';
+$_['error_send_order_nolog']   = 'Order #%s was not sent: the module did not contact the system. Check the "Order Transfer Check" items above.';
+$_['error_send_order_failed']  = 'Order #%s was not accepted (HTTP %s): %s';
+
+// ─── Order Transfer Check (Orders tab) ───
+$_['text_diag_title']      = 'Order Transfer Check';
+$_['diag_module_ok']       = 'The module is enabled.';
+$_['diag_module_bad']      = 'The module is disabled — enable it on the "Settings" tab and click "Save".';
+$_['diag_orders_ok']       = 'Order transfer is enabled.';
+$_['diag_orders_bad']      = 'Order transfer is disabled — enable it above and click "Save".';
+$_['diag_creds_ok']        = 'System URL and System Access Token are set.';
+$_['diag_creds_bad']       = '"System URL" or "System Access Token" is missing ("Settings" tab).';
+$_['diag_events_ok']       = 'OpenCart order events are registered and enabled.';
+$_['diag_events_bad']      = 'OpenCart events are missing or disabled: %s. Orders are not sent without them. Click "Save" — the module will restore them.';
+$_['diag_files_ok']        = 'Module files are present on the website and come from the same package.';
+$_['diag_files_missing']   = 'Module files are missing on the website: %s. Upload them from the module package.';
+$_['diag_files_mismatch']  = 'Module files come from different packages: the website controller (catalog/controller/extension/module/growthcontour.php) calls the delivery snapshot, but the website model (catalog/model/extension/module/growthcontour.php) does not have this method. Because of this, checkout breaks when the order is sent. Upload the model from the same package.';
+$_['diag_last_none']       = 'No orders have been sent yet. Place a test order on the website and click "Save" or reload the page — the result will appear here.';
+$_['diag_last_ok']         = 'Last transfer: %s, order #%s — accepted by the system.';
+$_['diag_last_bad']        = 'Last transfer: %s, order #%s — error: %s. Details are on the "Logs" tab.';
+
+// ─── Delivery ───
+$_['tab_delivery']               = 'Delivery';
+$_['text_delivery_intro']        = 'At checkout the module saves a delivery snapshot: order fields plus session and form data related to delivery. This way data is not lost even if the shipping module (including an encrypted one) does not write it into the order. The snapshot is then parsed by the rules below: carrier, service type, city, branch / parcel locker with ref. For Nova Poshta the ref is found automatically in the website\'s Nova Poshta module tables: by a UUID in the snapshot or by number "№123" and city.';
+$_['text_delivery_rules']        = 'Parsing Rules (JSON)';
+$_['help_delivery_rules']        = 'An array of rules; the first one matching the shipping code (<code>shipping_code</code>) is applied.<br><code>match</code> — exact code (<code>novaposhta.poshtomat</code>) or a regular expression (<code>/^novaposhta\\./</code>);<br><code>carrier</code> — carrier (<code>novaposhta</code>); <code>service</code> — <code>warehouse</code> | <code>postomat</code> | <code>address</code> | <code>pickup</code>;<br><code>fields</code> — where to take values from: <code>area, area_ref, city, city_ref, point, point_ref, point_number, street, building, flat</code>. Source: <code>order.shipping_address_1</code>, <code>session.key.key</code>, <code>post.key</code>; with a regular expression — <code>order.shipping_address_1 | /№\s*(\d+)/u</code> (1st group); several — separated by <code>||</code> (first non-empty); constant — <code>=text</code>.<br><code>auto: false</code> — disable automatic ref lookup in Nova Poshta tables. See the paths for <code>session</code> / <code>post</code> with the "Snapshot" button in the list below.';
+$_['help_delivery_save']         = 'Rules are saved with the "Save" button at the top of the page together with the other settings.';
+$_['entry_delivery_test']        = 'Test on order #';
+$_['button_delivery_test']       = 'Test';
+$_['entry_delivery_reparse']     = 'Re-parse latest';
+$_['button_delivery_reparse']    = 'Re-parse';
+$_['text_delivery_recent']       = 'Latest Orders';
+$_['text_delivery_all']          = 'All';
+$_['text_delivery_st_ok']        = 'Complete';
+$_['text_delivery_st_partial']   = 'Partial';
+$_['text_delivery_st_empty']     = 'Empty';
+$_['text_delivery_st_none']      = 'Not a delivery service';
+$_['text_delivery_empty_list']   = 'No data';
+$_['button_delivery_raw']        = 'Snapshot';
+$_['column_delivery_method']     = 'Method';
+$_['column_delivery_status']     = 'State';
+$_['column_delivery_city']       = 'City';
+$_['column_delivery_point']      = 'Branch / Address';
+$_['column_delivery_found']      = 'Found By';
+$_['text_delivery_saved']        = 'Rules saved. Click "Re-parse" to apply them to existing orders.';
+$_['text_delivery_reparsed']     = 'Orders re-parsed: %s';
+$_['error_delivery_rules']       = 'Error in rules: %s';
+$_['error_delivery_order']       = 'Order not found.';
+
+// ─── Import to System: save hint ───
+$_['help_imp_save']              = 'Import settings are saved with the "Save" button at the top of the page together with the others, and automatically when the import starts.';
