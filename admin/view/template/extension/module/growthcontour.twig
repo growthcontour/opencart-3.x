@@ -1,0 +1,1781 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="button" id="gc-save" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div id="gc-alert"></div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-growthcontour" class="form-horizontal">
+
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-settings" data-toggle="tab"><i class="fa fa-cog"></i> {{ tab_settings }}</a></li>
+            <li><a href="#tab-orders" data-toggle="tab"><i class="fa fa-shopping-cart"></i> {{ tab_orders }}</a></li>
+            <li><a href="#tab-cart" data-toggle="tab"><i class="fa fa-shopping-basket"></i> {{ tab_cart }}</a></li>
+            <li><a href="#tab-catalog" data-toggle="tab"><i class="fa fa-cubes"></i> {{ tab_catalog }}</a></li>
+            <li><a href="#tab-import" data-toggle="tab"><i class="fa fa-download"></i> {{ tab_import }}</a></li>
+            <li><a href="#tab-delivery" data-toggle="tab"><i class="fa fa-truck"></i> {{ tab_delivery }}</a></li>
+            <li><a href="#tab-logs" data-toggle="tab"><i class="fa fa-list-alt"></i> {{ tab_logs }}</a></li>
+            <li><a href="#tab-support" data-toggle="tab"><i class="fa fa-life-ring"></i> {{ tab_support }}</a></li>
+          </ul>
+
+          <div class="tab-content">
+
+            <!-- Tab: Settings -->
+            <div class="tab-pane active" id="tab-settings">
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_status" id="input-status" class="form-control">
+                    <option value="1" {{ module_growthcontour_status ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_status ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-domain">{{ entry_domain }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_growthcontour_domain" value="{{ module_growthcontour_domain }}" placeholder="{{ placeholder_domain }}" id="input-domain" class="form-control" />
+                  <p class="help-block">{{ help_domain }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-token">{{ entry_token }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_growthcontour_token" value="{{ module_growthcontour_token }}" id="input-token" class="form-control" />
+                  <p class="help-block">{{ help_token }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-integration">{{ entry_integration }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_growthcontour_integration_id" value="{{ module_growthcontour_integration_id }}" placeholder="{{ placeholder_integration }}" id="input-integration" class="form-control" />
+                  <p class="help-block">{{ help_integration }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_check_connection }}</label>
+                <div class="col-sm-10">
+                  <button type="button" id="btn-check-connection" class="btn btn-info"><i class="fa fa-plug"></i> {{ button_check_connection }}</button>
+                  <div id="check-connection-result" style="margin-top:10px;"></div>
+                  <p class="help-block">{{ help_check_connection }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-inbound-token">{{ entry_inbound_token }}</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" name="module_growthcontour_inbound_token" value="{{ module_growthcontour_inbound_token }}" id="input-inbound-token" class="form-control" readonly />
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" id="btn-copy-inbound" title="{{ button_copy }}"><i class="fa fa-copy"></i></button>
+                      <button type="button" class="btn btn-warning" id="btn-regenerate-inbound" title="{{ button_regenerate }}"><i class="fa fa-refresh"></i></button>
+                      <button type="button" class="btn btn-danger" id="btn-revoke-old" title="{{ button_revoke_old }}"><i class="fa fa-ban"></i></button>
+                    </span>
+                  </div>
+                  <p class="help-block">{{ help_inbound_token }}</p>
+                  {% if module_growthcontour_inbound_token_old %}
+                  <p class="help-block text-warning"><i class="fa fa-exclamation-triangle"></i> {{ text_rotation_active }}</p>
+                  {% endif %}
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Tab: Orders -->
+            <div class="tab-pane" id="tab-orders">
+
+              <div id="orders-diag"></div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_send_status }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_orders_status" class="form-control">
+                    <option value="1" {{ module_growthcontour_orders_status ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_orders_status ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                  <p class="help-block">{{ help_send_status }}</p>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_sync_all }}</label>
+                <div class="col-sm-10">
+                  <button type="button" id="btn-sync-all" class="btn btn-primary"><i class="fa fa-cloud-upload"></i> {{ button_sync_all }}</button>
+                  <div id="sync-all-progress" style="margin-top:10px;"></div>
+                  <p class="help-block">{{ help_sync_all }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-send-order">{{ entry_send_order }}</label>
+                <div class="col-sm-10">
+                  <div class="input-group" style="max-width:320px;">
+                    <span class="input-group-addon">#</span>
+                    <input type="number" min="1" id="input-send-order" class="form-control" placeholder="{{ placeholder_send_order }}" />
+                    <span class="input-group-btn">
+                      <button type="button" id="btn-send-order" class="btn btn-primary"><i class="fa fa-paper-plane"></i> {{ button_send_order }}</button>
+                    </span>
+                  </div>
+                  <div id="send-order-result" style="margin-top:10px;"></div>
+                  <p class="help-block">{{ help_send_order }}</p>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_status_map }}</label>
+                <div class="col-sm-10">
+                  <button type="button" id="btn-sync-statuses" class="btn btn-info"><i class="fa fa-refresh"></i> {{ button_sync_statuses }}</button>
+                  <span id="sync-result" style="margin-left:8px;"></span>
+                  <p class="help-block">{{ help_status_map }}</p>
+
+                  <table class="table table-bordered" style="margin-top:10px;max-width:640px;">
+                    <thead>
+                      <tr>
+                        <th style="width:50%;">{{ column_oc_status }}</th>
+                        <th>{{ column_crm_status }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for order_status in order_statuses %}
+                      <tr>
+                        <td>{{ order_status.name }}</td>
+                        <td>
+                          <select name="module_growthcontour_status_map[{{ order_status.order_status_id }}]" class="form-control crm-status-select">
+                            <option value="">{{ text_none }}</option>
+                            {% for crm in module_growthcontour_crm_statuses %}
+                            <option value="{{ crm.id }}" {{ (module_growthcontour_status_map[order_status.order_status_id] is defined and module_growthcontour_status_map[order_status.order_status_id] == crm.id) ? 'selected="selected"' }}>{{ crm.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                  <div id="crm-status-store" style="display:none;">
+                    {% for crm in module_growthcontour_crm_statuses %}
+                    <input type="hidden" name="module_growthcontour_crm_statuses[{{ loop.index0 }}][id]" value="{{ crm.id }}" />
+                    <input type="hidden" name="module_growthcontour_crm_statuses[{{ loop.index0 }}][name]" value="{{ crm.name }}" />
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_status_map_in }}</label>
+                <div class="col-sm-10">
+                  <p class="help-block">{{ help_status_map_in }}</p>
+                  <table class="table table-bordered" style="margin-top:10px;max-width:640px;">
+                    <thead>
+                      <tr>
+                        <th style="width:50%;">{{ column_crm_status }}</th>
+                        <th>{{ column_oc_status }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for crm in module_growthcontour_crm_statuses %}
+                      <tr>
+                        <td>{{ crm.name }}</td>
+                        <td>
+                          <select name="module_growthcontour_status_map_in[{{ crm.id }}]" class="form-control">
+                            <option value="">{{ text_none }}</option>
+                            {% for order_status in order_statuses %}
+                            <option value="{{ order_status.order_status_id }}" {{ (module_growthcontour_status_map_in[crm.id] is defined and module_growthcontour_status_map_in[crm.id] == order_status.order_status_id) ? 'selected="selected"' }}>{{ order_status.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_paid_statuses }}</label>
+                <div class="col-sm-10">
+                  <p class="help-block">{{ help_paid_statuses }}</p>
+                  <div style="max-width:640px;">
+                    {% for order_status in order_statuses %}
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="module_growthcontour_paid_statuses[]" value="{{ order_status.order_status_id }}" {{ (module_growthcontour_paid_statuses and order_status.order_status_id in module_growthcontour_paid_statuses) ? 'checked="checked"' }} />
+                        {{ order_status.name }}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Tab: Abandoned cart -->
+            <div class="tab-pane" id="tab-cart">
+
+              <div id="cart-stats" style="margin-bottom:15px;"></div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_cart_enabled }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_cart_enabled" class="form-control">
+                    <option value="1" {{ module_growthcontour_cart_enabled ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_cart_enabled ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                  <p class="help-block">{{ help_cart_enabled }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-cart-threshold">{{ entry_cart_threshold }}</label>
+                <div class="col-sm-10">
+                  <input type="number" min="1" name="module_growthcontour_cart_threshold_min" value="{{ module_growthcontour_cart_threshold_min ?: 60 }}" id="input-cart-threshold" class="form-control" />
+                  <p class="help-block">{{ help_cart_threshold }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-cart-maxage">{{ entry_cart_max_age }}</label>
+                <div class="col-sm-10">
+                  <input type="number" min="1" name="module_growthcontour_cart_max_age_hours" value="{{ module_growthcontour_cart_max_age_hours ?: 168 }}" id="input-cart-maxage" class="form-control" />
+                  <p class="help-block">{{ help_cart_max_age }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-cart-minamount">{{ entry_cart_min_amount }}</label>
+                <div class="col-sm-10">
+                  <input type="number" min="0" step="0.01" name="module_growthcontour_cart_min_amount" value="{{ module_growthcontour_cart_min_amount ?: 0 }}" id="input-cart-minamount" class="form-control" />
+                  <p class="help-block">{{ help_cart_min_amount }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-cart-batch">{{ entry_cart_batch }}</label>
+                <div class="col-sm-10">
+                  <input type="number" min="1" max="200" name="module_growthcontour_cart_batch" value="{{ module_growthcontour_cart_batch ?: 50 }}" id="input-cart-batch" class="form-control" />
+                  <p class="help-block">{{ help_cart_batch }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_cart_guests }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_cart_guests" class="form-control">
+                    <option value="1" {{ module_growthcontour_cart_guests ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_cart_guests ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                  <p class="help-block">{{ help_cart_guests }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_cart_require_contact }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_cart_require_contact" class="form-control">
+                    <option value="1" {{ module_growthcontour_cart_require_contact ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_cart_require_contact ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                  <p class="help-block">{{ help_cart_require_contact }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_cart_require_consent }}</label>
+                <div class="col-sm-10">
+                  <select name="module_growthcontour_cart_require_consent" class="form-control">
+                    <option value="1" {{ module_growthcontour_cart_require_consent ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                    <option value="0" {{ not module_growthcontour_cart_require_consent ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                  </select>
+                  <p class="help-block">{{ help_cart_require_consent }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_cart_cron }}</label>
+                <div class="col-sm-10">
+                  <input type="text" value="{{ cart_cron_url }}" class="form-control" readonly onclick="this.select();" />
+                  <p class="help-block">{{ help_cart_cron }}</p>
+                  <pre style="white-space:pre-wrap;">*/10 * * * * curl -s -H "Authorization: Bearer {{ module_growthcontour_inbound_token }}" "{{ cart_cron_url }}"</pre>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Tab: Catalog -->
+            <div class="tab-pane" id="tab-catalog">
+
+              <div class="catalog-run" style="margin-bottom:12px;">
+                <button type="button" class="btn btn-success btn-catalog-run" data-entity="all"><i class="fa fa-refresh"></i> {{ button_sync_catalog_all }}</button>
+                <label class="checkbox-inline" style="margin-left:10px;"><input type="checkbox" class="opt-force" /> {{ text_opt_force }}</label>
+                <label class="checkbox-inline text-danger"><input type="checkbox" class="opt-wipe" /> {{ text_opt_wipe }}</label>
+                <span class="catalog-run-result" style="margin-left:8px;"></span>
+              </div>
+
+              <div id="catalog-progress" style="margin-bottom:15px;"></div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_sync_batch }}</label>
+                <div class="col-sm-10">
+                  <input type="number" min="10" max="500" name="module_growthcontour_sync_batch" value="{{ module_growthcontour_sync_batch }}" class="form-control" style="max-width:160px;" />
+                  <p class="help-block">{{ help_sync_batch }}</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_sync_cron }}</label>
+                <div class="col-sm-10">
+                  <pre style="white-space:pre-wrap;margin:0;">*/5 * * * * curl -s -H "Authorization: Bearer {{ module_growthcontour_inbound_token }}" "{{ catalog_cron_url }}"</pre>
+                  <p class="help-block">{{ help_sync_cron }}</p>
+                </div>
+              </div>
+
+              {% set ents = {'categories': tab_cat_categories, 'attributes': tab_cat_attributes, 'products': tab_cat_products, 'reviews': tab_cat_reviews, 'customers': tab_cat_customers} %}
+              {% set all_matches = {
+                'products': {'sku': text_match_sku, 'id': text_match_id, 'map': text_match_map},
+                'categories': {'name': text_match_name, 'id': text_match_id, 'map': text_match_map},
+                'attributes': {'name': text_match_name, 'id': text_match_id, 'map': text_match_map},
+                'reviews': {'map': text_match_map, 'id': text_match_id},
+                'customers': {'email': text_match_email, 'id': text_match_id, 'map': text_match_map}
+              } %}
+
+              <ul class="nav nav-pills" style="margin-bottom:20px;">
+                {% for e, title in ents %}
+                <li{{ loop.first ? ' class="active"' }}><a href="#cat-{{ e }}" data-toggle="tab">{{ title }}</a></li>
+                {% endfor %}
+              </ul>
+
+              <div class="tab-content">
+                {% for e, title in ents %}
+                {% set k = 'module_growthcontour_sync_' ~ e %}
+                <div class="tab-pane{{ loop.first ? ' active' }}" id="cat-{{ e }}">
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_enabled }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}" class="form-control">
+                        <option value="1" {{ attribute(_context, k) ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                        <option value="0" {{ not attribute(_context, k) ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                      </select>
+                      <p class="help-block">{{ attribute(_context, 'help_sync_' ~ e) }}</p>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_match }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}_match" class="form-control">
+                        {% for v, t in all_matches[e] %}
+                        <option value="{{ v }}" {{ attribute(_context, k ~ '_match') == v ? 'selected="selected"' }}>{{ t }}</option>
+                        {% endfor %}
+                      </select>
+                      <p class="help-block">{{ help_sync_match }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_create }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}_create" class="form-control">
+                        <option value="1" {{ attribute(_context, k ~ '_create') ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                        <option value="0" {{ not attribute(_context, k ~ '_create') ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_update }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}_update" class="form-control">
+                        <option value="1" {{ attribute(_context, k ~ '_update') ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                        <option value="0" {{ not attribute(_context, k ~ '_update') ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_missing }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}_missing" class="form-control">
+                        {% for v in (e == 'products' ? ['disable', 'out_of_stock', 'delete', 'keep'] : ['disable', 'delete', 'keep']) %}
+                        <option value="{{ v }}" {{ attribute(_context, k ~ '_missing') == v ? 'selected="selected"' }}>{{ attribute(_context, 'text_missing_' ~ v) }}</option>
+                        {% endfor %}
+                      </select>
+                      <p class="help-block">{{ help_sync_missing }}</p>
+                    </div>
+                  </div>
+
+                  {% if e == 'products' %}
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_sku }}</label>
+                    <div class="col-sm-10">
+                      <select name="module_growthcontour_sync_products_sku" class="form-control">
+                        <option value="model" {{ module_growthcontour_sync_products_sku == 'model' ? 'selected="selected"' }}>{{ text_sku_model }}</option>
+                        <option value="sku" {{ module_growthcontour_sync_products_sku == 'sku' ? 'selected="selected"' }}>{{ text_sku_sku }}</option>
+                      </select>
+                      <p class="help-block">{{ help_sync_sku }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_fields }}</label>
+                    <div class="col-sm-10">
+                      <input type="hidden" name="module_growthcontour_sync_products_fields[]" value="" />
+                      {% for f in ['price', 'quantity', 'status', 'content', 'categories', 'options', 'attributes'] %}
+                      <div class="checkbox"><label>
+                        <input type="checkbox" name="module_growthcontour_sync_products_fields[]" value="{{ f }}" {{ f in module_growthcontour_sync_products_fields ? 'checked="checked"' }} />
+                        {{ attribute(_context, 'text_field_' ~ f) }}
+                      </label></div>
+                      {% endfor %}
+                      <p class="help-block">{{ help_sync_fields }}</p>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  {% if e == 'reviews' %}
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_moderation }}</label>
+                    <div class="col-sm-10">
+                      <select name="module_growthcontour_sync_reviews_moderation" class="form-control">
+                        <option value="1" {{ module_growthcontour_sync_reviews_moderation ? 'selected="selected"' }}>{{ text_enabled }}</option>
+                        <option value="0" {{ not module_growthcontour_sync_reviews_moderation ? 'selected="selected"' }}>{{ text_disabled }}</option>
+                      </select>
+                      <p class="help-block">{{ help_sync_reviews_moderation }}</p>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_sync_auto }}</label>
+                    <div class="col-sm-10">
+                      <select name="{{ k }}_auto" class="form-control">
+                        {% for v, t in sync_intervals %}
+                        <option value="{{ v }}" {{ attribute(_context, k ~ '_auto') == v ? 'selected="selected"' }}>{{ t }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group catalog-run">
+                    <label class="col-sm-2 control-label">{{ entry_sync_manual }}</label>
+                    <div class="col-sm-10">
+                      <label class="checkbox-inline"><input type="checkbox" class="opt-force" /> {{ text_opt_force }}</label>
+                      <label class="checkbox-inline"><input type="checkbox" class="opt-resume" /> {{ text_opt_resume }}</label>
+                      <label class="checkbox-inline text-danger"><input type="checkbox" class="opt-wipe" /> {{ text_opt_wipe }}</label>
+                      <div style="margin-top:8px;">
+                        <button type="button" class="btn btn-primary btn-catalog-run" data-entity="{{ e }}"><i class="fa fa-refresh"></i> {{ attribute(_context, 'button_sync_' ~ e) }}</button>
+                        <span class="catalog-run-result" style="margin-left:8px;"></span>
+                      </div>
+                      <p class="help-block">{{ help_sync_manual }}</p>
+                    </div>
+                  </div>
+
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Tab: Import into the system -->
+            <div class="tab-pane" id="tab-import">
+              <p class="help-block">{{ text_imp_intro }}</p>
+
+              <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-sliders"></i> {{ text_imp_settings }}</h3></div>
+                <div class="panel-body">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_mode }}</label>
+                    <div class="col-sm-10">
+                      <label class="radio-inline"><input type="radio" name="imp_mode_ui" value="dry" checked="checked" /> {{ text_imp_mode_dry }}</label>
+                      <label class="radio-inline"><input type="radio" name="imp_mode_ui" value="trial" /> {{ text_imp_mode_trial }}</label>
+                      <label class="radio-inline"><input type="radio" name="imp_mode_ui" value="full" /> {{ text_imp_mode_full }}</label>
+                      <p class="help-block">{{ help_imp_mode }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group" id="imp-limit-row">
+                    <label class="col-sm-2 control-label">{{ entry_imp_limit }}</label>
+                    <div class="col-sm-10">
+                      <input type="number" min="0" id="imp-limit" class="form-control" style="max-width:160px;display:inline-block;" value="20" />
+                      <input type="text" id="imp-ids" class="form-control" style="max-width:420px;display:inline-block;margin-left:8px;" placeholder="{{ placeholder_imp_ids }}" />
+                      <p class="help-block">{{ help_imp_limit }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_match }}</label>
+                    <div class="col-sm-10">
+                      <table class="table table-condensed" style="max-width:640px;margin-bottom:6px;">
+                        <thead><tr><th style="width:30px;">#</th><th>{{ column_imp_site_field }}</th><th></th><th>{{ column_imp_crm_field }}</th><th style="width:110px;"></th></tr></thead>
+                        <tbody id="imp-match"></tbody>
+                      </table>
+                      <button type="button" class="btn btn-default btn-sm" id="imp-match-add"><i class="fa fa-plus"></i> {{ button_imp_add_rule }}</button>
+                      <p class="help-block">{{ help_imp_match }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_new }}</label>
+                    <div class="col-sm-10">
+                      <select id="imp-on-new" class="form-control" style="max-width:260px;display:inline-block;">
+                        <option value="create">{{ text_imp_new_create }}</option>
+                        <option value="skip">{{ text_imp_new_skip }}</option>
+                      </select>
+                      <select id="imp-status-new" class="form-control" style="max-width:260px;display:inline-block;margin-left:8px;">
+                        <option value="draft">{{ text_imp_status_draft }}</option>
+                        <option value="active">{{ text_imp_status_active }}</option>
+                        <option value="site">{{ text_imp_status_site }}</option>
+                      </select>
+                      <select id="imp-sku-from" class="form-control" style="max-width:260px;display:inline-block;margin-left:8px;">
+                        <option value="sku">{{ text_imp_sku_sku }}</option>
+                        <option value="model">{{ text_imp_sku_model }}</option>
+                        <option value="none">{{ text_imp_sku_none }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_match_found }}</label>
+                    <div class="col-sm-10">
+                      <select id="imp-on-match" class="form-control" style="max-width:260px;display:inline-block;">
+                        <option value="link">{{ text_imp_match_link }}</option>
+                        <option value="update">{{ text_imp_match_update }}</option>
+                      </select>
+                      <div id="imp-update-fields" style="margin-top:8px;display:none;">
+                        <label class="checkbox-inline"><input type="checkbox" id="imp-upd-price" /> {{ text_imp_upd_price }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" id="imp-upd-stock" /> {{ text_imp_upd_stock }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" id="imp-upd-status" /> {{ text_imp_upd_status }}</label>
+                        <div style="margin-top:6px;" class="text-muted">{{ text_imp_upd_content }}</div>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="names" /> {{ text_imp_upd_names }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="codes" /> {{ text_imp_upd_codes }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="brand" /> {{ text_imp_upd_brand }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="categories" /> {{ text_imp_upd_categories }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="images" /> {{ text_imp_upd_images }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="attributes" /> {{ text_imp_upd_attributes }}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="imp-upd-content" data-key="options" /> {{ text_imp_upd_options }}</label>
+                        <select id="imp-content-mode" class="form-control" style="max-width:420px;margin-top:6px;">
+                          <option value="fill">{{ text_imp_content_fill }}</option>
+                          <option value="overwrite">{{ text_imp_content_overwrite }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_content }}</label>
+                    <div class="col-sm-10">
+                      <select id="imp-categories" class="form-control" style="max-width:300px;display:inline-block;">
+                        <option value="path">{{ text_imp_cat_path }}</option>
+                        <option value="match">{{ text_imp_cat_match }}</option>
+                        <option value="none">{{ text_imp_cat_none }}</option>
+                      </select>
+                      <select id="imp-brands" class="form-control" style="max-width:300px;display:inline-block;margin-left:8px;">
+                        <option value="create">{{ text_imp_brand_create }}</option>
+                        <option value="match">{{ text_imp_brand_match }}</option>
+                        <option value="none">{{ text_imp_brand_none }}</option>
+                      </select>
+                      <label class="checkbox-inline" style="margin-left:10px;"><input type="checkbox" id="imp-images" checked="checked" /> {{ text_imp_images }}</label>
+                      <label class="checkbox-inline"><input type="checkbox" id="imp-link-site" checked="checked" /> {{ text_imp_link_site }}</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_dict }}</label>
+                    <div class="col-sm-10">
+                      <select id="imp-attributes" class="form-control" style="max-width:300px;display:inline-block;">
+                        <option value="create">{{ text_imp_attr_create }}</option>
+                        <option value="match">{{ text_imp_attr_match }}</option>
+                        <option value="none">{{ text_imp_attr_none }}</option>
+                      </select>
+                      <select id="imp-options" class="form-control" style="max-width:300px;display:inline-block;margin-left:8px;">
+                        <option value="create">{{ text_imp_opt_create }}</option>
+                        <option value="match">{{ text_imp_opt_match }}</option>
+                        <option value="none">{{ text_imp_opt_none }}</option>
+                      </select>
+                      <label class="checkbox-inline" style="margin-left:10px;"><input type="checkbox" id="imp-related" checked="checked" /> {{ text_imp_related }}</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_warehouse }}</label>
+                    <div class="col-sm-10">
+                      <select id="imp-warehouse" class="form-control" style="max-width:300px;"></select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_langs }}</label>
+                    <div class="col-sm-10" id="imp-langs"></div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ entry_imp_groups }}</label>
+                    <div class="col-sm-10">
+                      <div id="imp-groups"></div>
+                      <p class="help-block">{{ help_imp_groups }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="button" class="btn btn-primary" id="imp-start"><i class="fa fa-play"></i> {{ button_imp_start }}</button>
+                      <span id="imp-start-result" style="margin-left:8px;"></span>
+                      <p class="help-block"><i class="fa fa-info-circle"></i> {{ help_imp_save }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-tasks"></i> {{ text_imp_progress }}</h3>
+                </div>
+                <div class="panel-body">
+                  <div id="imp-job"></div>
+                  <table class="table table-condensed table-hover" style="margin-top:10px;">
+                    <thead><tr><th>#</th><th>{{ column_imp_mode }}</th><th>{{ column_imp_status }}</th><th>{{ column_imp_processed }}</th><th>{{ column_imp_result }}</th><th>{{ column_imp_date }}</th></tr></thead>
+                    <tbody id="imp-jobs"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="panel panel-default" id="imp-report" style="display:none;">
+                <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-list"></i> {{ text_imp_report }} <span id="imp-report-title"></span></h3></div>
+                <div class="panel-body">
+                  <div class="btn-group" id="imp-filter" style="margin-bottom:8px;">
+                    <button type="button" class="btn btn-default btn-sm active" data-action="">{{ text_imp_all }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="create">{{ text_imp_act_create }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="link">{{ text_imp_act_link }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="update">{{ text_imp_act_update }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="skip">{{ text_imp_act_skip }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="error">{{ text_imp_act_error }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="warnings">{{ text_imp_warnings }}</button>
+                  </div>
+                  <input type="text" id="imp-search" class="form-control input-sm" style="max-width:260px;display:inline-block;margin-left:8px;" placeholder="{{ placeholder_imp_search }}" />
+                  <div class="table-responsive">
+                    <table class="table table-condensed table-bordered" style="margin-top:8px;">
+                      <thead><tr><th>{{ column_imp_site_id }}</th><th>{{ column_imp_sku }}</th><th>{{ column_imp_name }}</th><th>{{ column_imp_action }}</th><th>{{ column_imp_matched }}</th><th>{{ column_imp_crm_id }}</th><th>{{ column_imp_message }}</th></tr></thead>
+                      <tbody id="imp-items"></tbody>
+                    </table>
+                  </div>
+                  <div id="imp-pager"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab: Delivery -->
+            <div class="tab-pane" id="tab-delivery">
+              <p class="help-block">{{ text_delivery_intro }}</p>
+
+              <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-code"></i> {{ text_delivery_rules }}</h3></div>
+                <div class="panel-body">
+                  <textarea id="dlv-rules" class="form-control" rows="14" spellcheck="false" style="font-family:monospace;font-size:12px;"></textarea>
+                  <div class="help-block">{{ help_delivery_rules }}</div>
+                  <p class="help-block"><i class="fa fa-info-circle"></i> {{ help_delivery_save }}</p>
+                  <div style="margin-top:8px;">
+                    <span>{{ entry_delivery_test }}</span>
+                    <input type="number" min="1" id="dlv-test-id" class="form-control" style="width:120px;display:inline-block;" />
+                    <button type="button" class="btn btn-default" id="dlv-test"><i class="fa fa-flask"></i> {{ button_delivery_test }}</button>
+                    <span style="margin-left:12px;">{{ entry_delivery_reparse }}</span>
+                    <input type="number" min="1" max="5000" id="dlv-reparse-n" value="200" class="form-control" style="width:100px;display:inline-block;" />
+                    <button type="button" class="btn btn-default" id="dlv-reparse"><i class="fa fa-refresh"></i> {{ button_delivery_reparse }}</button>
+                  </div>
+                  <div id="dlv-result" style="margin-top:10px;"></div>
+                </div>
+              </div>
+
+              <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-truck"></i> {{ text_delivery_recent }}</h3></div>
+                <div class="panel-body">
+                  <div class="btn-group" id="dlv-filter" style="margin-bottom:8px;">
+                    <button type="button" class="btn btn-default btn-sm active" data-status="">{{ text_delivery_all }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-status="ok">{{ text_delivery_st_ok }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-status="partial">{{ text_delivery_st_partial }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-status="empty">{{ text_delivery_st_empty }}</button>
+                    <button type="button" class="btn btn-default btn-sm" data-status="none">{{ text_delivery_st_none }}</button>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-condensed table-bordered">
+                      <thead><tr><th>#</th><th>{{ column_delivery_method }}</th><th>{{ column_delivery_status }}</th><th>{{ column_delivery_city }}</th><th>{{ column_delivery_point }}</th><th>{{ column_delivery_found }}</th><th></th></tr></thead>
+                      <tbody id="dlv-rows"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Tab: Logs -->
+            <div class="tab-pane" id="tab-logs">
+              <div style="margin-bottom:10px;">
+                <button type="button" class="btn btn-default" id="btn-refresh-logs"><i class="fa fa-refresh"></i> {{ button_refresh_logs }}</button>
+                <button type="button" class="btn btn-danger" id="btn-clear-logs"><i class="fa fa-trash"></i> {{ button_clear_logs }}</button>
+              </div>
+              <div id="logs-container">
+                <p class="text-muted"><i class="fa fa-inbox"></i> {{ text_no_logs }}</p>
+              </div>
+            </div>
+
+            <!-- Tab: Support -->
+            <div class="tab-pane" id="tab-support">
+              <div class="row">
+                <div class="col-md-8">
+                  <h3 style="margin-top:0;">{{ text_about_title }}</h3>
+                  <p class="lead" style="font-size:16px;">{{ text_about_intro }}</p>
+
+                  {% for s in ['safe', 'orders', 'statuses', 'payments', 'cart', 'catalog', 'modes', 'progress', 'auto', 'import', 'delivery', 'security', 'logs'] %}
+                  <h4><i class="fa {{ attribute(_context, 'icon_about_' ~ s) }}"></i> {{ attribute(_context, 'text_about_' ~ s ~ '_title') }}</h4>
+                  {{ attribute(_context, 'text_about_' ~ s) }}
+                  {% endfor %}
+
+                  <h4><i class="fa fa-rocket"></i> {{ text_start_title }}</h4>
+                  {{ text_start_steps }}
+
+                  <p class="text-muted" style="margin-top:20px;">{{ text_about_version }}</p>
+                </div>
+
+                <div class="col-md-4">
+                  <h3 style="margin-top:0;">{{ text_contacts_title }}</h3>
+                  {% for c in ['sales', 'support', 'bugs', 'security'] %}
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      <h4 style="margin-top:0;"><i class="fa {{ attribute(_context, 'icon_contact_' ~ c) }}"></i> {{ attribute(_context, 'text_contact_' ~ c ~ '_title') }}</h4>
+                      <p class="text-muted">{{ attribute(_context, 'text_contact_' ~ c ~ '_text') }}</p>
+                      <a href="mailto:{{ attribute(_context, 'text_contact_' ~ c ~ '_email') }}"><i class="fa fa-envelope-o"></i> {{ attribute(_context, 'text_contact_' ~ c ~ '_email') }}</a>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript"><!--
+$(document).ready(function () {
+
+  var L = {
+    none: '{{ text_none|e('js') }}',
+    connError: '{{ error_connection|e('js') }}',
+    error: '{{ error_generic|e('js') }}',
+    ok: '{{ text_ok|e('js') }}',
+    confirmSyncAll: '{{ text_confirm_sync_all|e('js') }}',
+    syncAllDone: '{{ text_sync_all_done|e('js') }}',
+    confirmRegenerate: '{{ text_confirm_regenerate|e('js') }}',
+    confirmRevokeOld: '{{ text_confirm_revoke_old|e('js') }}',
+    confirmClear: '{{ text_confirm_clear|e('js') }}',
+    noLogs: '{{ text_no_logs|e('js') }}',
+    logOk: '{{ text_log_ok|e('js') }}',
+    logDup: '{{ text_log_dup|e('js') }}',
+    logFail: '{{ text_log_fail|e('js') }}',
+    colTime: '{{ column_time|e('js') }}',
+    colEvent: '{{ column_event|e('js') }}',
+    colOrder: '{{ column_order|e('js') }}',
+    colHttp: '{{ column_http|e('js') }}',
+    colResult: '{{ column_result|e('js') }}',
+    colMessage: '{{ column_message|e('js') }}',
+    statTotal: '{{ stat_total|e('js') }}',
+    statOpen: '{{ stat_open|e('js') }}',
+    statSent: '{{ stat_sent|e('js') }}',
+    statRecovered: '{{ stat_recovered|e('js') }}',
+    statExpired: '{{ stat_expired|e('js') }}',
+    statRate: '{{ stat_recovery_rate|e('js') }}',
+    confirmCatalogAll: '{{ text_confirm_sync_catalog_all|e('js') }}',
+    wipePrompt: '{{ text_wipe_prompt|e('js') }}',
+    notStarted: '{{ text_job_not_started|e('js') }}',
+    perSec: '{{ text_per_sec|e('js') }}',
+    unitH: '{{ text_unit_h|e('js') }}',
+    unitM: '{{ text_unit_m|e('js') }}',
+    unitS: '{{ text_unit_s|e('js') }}',
+    never: '{{ text_never|e('js') }}',
+    cancel: '{{ button_cancel_sync|e('js') }}',
+    colEntity: '{{ column_entity|e('js') }}',
+    colInShop: '{{ column_in_shop|e('js') }}',
+    colStatus: '{{ column_status|e('js') }}',
+    colProgress: '{{ column_progress|e('js') }}',
+    colCounters: '{{ column_counters|e('js') }}',
+    colSpeed: '{{ column_speed|e('js') }}',
+    saved: '{{ text_success|e('js') }}',
+    diagTitle: '{{ text_diag_title|e('js') }}'
+  };
+
+  var URL = {
+    pull: '{{ pull|e('js') }}'.replace(/&amp;/g, '&'),
+    syncAll: '{{ sync_all|e('js') }}'.replace(/&amp;/g, '&'),
+    checkConnection: '{{ check_connection|e('js') }}'.replace(/&amp;/g, '&'),
+    sendOrder: '{{ send_order|e('js') }}'.replace(/&amp;/g, '&'),
+    regenerate: '{{ regenerate|e('js') }}'.replace(/&amp;/g, '&'),
+    revokeOld: '{{ revoke_old|e('js') }}'.replace(/&amp;/g, '&'),
+    logs: '{{ logs|e('js') }}'.replace(/&amp;/g, '&'),
+    clear: '{{ clear|e('js') }}'.replace(/&amp;/g, '&'),
+    cartStats: '{{ cart_stats|e('js') }}'.replace(/&amp;/g, '&'),
+    catalogStats: '{{ catalog_stats|e('js') }}'.replace(/&amp;/g, '&'),
+    catalogRun: '{{ catalog_run|e('js') }}'.replace(/&amp;/g, '&'),
+    catalogCancel: '{{ catalog_cancel|e('js') }}'.replace(/&amp;/g, '&'),
+    save: '{{ save|e('js') }}'.replace(/&amp;/g, '&')
+  };
+
+  function escHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ─── Збереження: кнопка вгорі, без перезавантаження сторінки ───
+  // Вкладки з власними даними (імпорт, доставка) додають свої поля через window.GC_SAVE
+  window.GC_SAVE = window.GC_SAVE || [];
+  function gcAlert(type, text) {
+    $('#gc-alert').html('<div class="alert alert-' + type + ' alert-dismissible"><i class="fa ' + (type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle') + '"></i> ' + escHtml(text) +
+      ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+  }
+  function gcSave() {
+    var $btn = $('#gc-save').prop('disabled', true);
+    $btn.find('i').attr('class', 'fa fa-spinner fa-spin');
+    var data = $.grep($('#form-growthcontour').serializeArray(), function (f) { return f.name.indexOf('module_growthcontour_') === 0; });
+    $.each(window.GC_SAVE, function (i, fn) {
+      var extra = fn();
+      if (extra) { $.each(extra, function (k, v) { data.push({ name: k, value: v }); }); }
+    });
+    $.ajax({
+      url: URL.save,
+      type: 'POST',
+      dataType: 'json',
+      data: $.param(data),
+      success: function (res) {
+        $btn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
+        if (res.error) { gcAlert('danger', res.error); } else { gcAlert('success', res.success || L.saved); }
+        if (res.warning) { $('#gc-alert').append('<div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> ' + escHtml(res.warning) + '</div>'); }
+        if (res.diag) { renderDiag(res.diag); }
+      },
+      error: function () {
+        $btn.prop('disabled', false).find('i').attr('class', 'fa fa-save');
+        gcAlert('danger', L.connError);
+      }
+    });
+  }
+  $('#gc-save').on('click', gcSave);
+  // Enter у полі форми — те саме збереження, без переходу зі сторінки
+  $('#form-growthcontour').on('submit', function (e) { e.preventDefault(); gcSave(); });
+
+  // ─── Перевірка передачі замовлень ───
+  function renderDiag(list) {
+    var html = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><i class="fa fa-stethoscope"></i> ' + escHtml(L.diagTitle) + '</h3></div><ul class="list-group">';
+    $.each(list || [], function (i, d) {
+      var icon = d.ok === true ? 'fa-check text-success' : (d.ok === false ? 'fa-times text-danger' : 'fa-info-circle text-warning');
+      html += '<li class="list-group-item"><i class="fa ' + icon + '" style="width:18px;"></i> ' + escHtml(d.text) + '</li>';
+    });
+    $('#orders-diag').html(html + '</ul></div>');
+  }
+  renderDiag({{ orders_diag_json }});
+
+  // ─── Статуси замовлень ───
+  $('#btn-sync-statuses').on('click', function () {
+    var $btn = $(this).prop('disabled', true);
+    $('#sync-result').html('<i class="fa fa-spinner fa-spin"></i>');
+
+    $.ajax({
+      url: URL.pull,
+      type: 'POST',
+      dataType: 'json',
+      data: { domain: $('#input-domain').val(), token: $('#input-token').val() },
+      success: function (res) {
+        $btn.prop('disabled', false);
+        if (res.error) {
+          $('#sync-result').html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(res.error) + '</span>');
+          return;
+        }
+        var statuses = res.statuses || [];
+        $('.crm-status-select').each(function () {
+          var $sel = $(this), current = $sel.val(), html = '<option value="">' + escHtml(L.none) + '</option>';
+          for (var i = 0; i < statuses.length; i++) {
+            html += '<option value="' + escHtml(String(statuses[i].id)) + '"' + (String(statuses[i].id) === String(current) ? ' selected="selected"' : '') + '>' + escHtml(statuses[i].name) + '</option>';
+          }
+          $sel.html(html);
+        });
+        var store = '';
+        for (var j = 0; j < statuses.length; j++) {
+          store += '<input type="hidden" name="module_growthcontour_crm_statuses[' + j + '][id]" value="' + escHtml(String(statuses[j].id)) + '" />';
+          store += '<input type="hidden" name="module_growthcontour_crm_statuses[' + j + '][name]" value="' + escHtml(statuses[j].name) + '" />';
+        }
+        $('#crm-status-store').html(store);
+        $('#sync-result').html('<span class="text-success"><i class="fa fa-check"></i> ' + escHtml(res.success || '') + '</span>');
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        $('#sync-result').html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(L.connError) + '</span>');
+      }
+    });
+  });
+
+  // ─── Перевірка з'єднання з системою (значення полів — ще не збережені теж) ───
+  $('#btn-check-connection').on('click', function () {
+    var $btn = $(this).prop('disabled', true);
+    var $res = $('#check-connection-result').html('<i class="fa fa-spinner fa-spin"></i>');
+    $.ajax({
+      url: URL.checkConnection,
+      type: 'POST',
+      dataType: 'json',
+      data: { domain: $('#input-domain').val(), token: $('#input-token').val() },
+      success: function (res) {
+        $btn.prop('disabled', false);
+        $res.html(res.error
+          ? '<div class="alert alert-danger" style="margin:0;"><i class="fa fa-times-circle"></i> ' + escHtml(res.error) + '</div>'
+          : '<div class="alert alert-success" style="margin:0;"><i class="fa fa-check-circle"></i> ' + escHtml(res.success) + '</div>');
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        $res.html('<div class="alert alert-danger" style="margin:0;"><i class="fa fa-times-circle"></i> ' + escHtml(L.connError) + '</div>');
+      }
+    });
+  });
+
+  // ─── Передати одне замовлення за ID ───
+  function sendOne() {
+    var id = parseInt($('#input-send-order').val(), 10);
+    if (!id) { return; }
+    var $btn = $('#btn-send-order').prop('disabled', true);
+    var $res = $('#send-order-result').html('<i class="fa fa-spinner fa-spin"></i>');
+    $.ajax({
+      url: URL.sendOrder,
+      type: 'POST',
+      dataType: 'json',
+      data: { order_id: id },
+      success: function (res) {
+        $btn.prop('disabled', false);
+        $res.html(res.error
+          ? '<div class="alert alert-danger" style="margin:0;"><i class="fa fa-times-circle"></i> ' + escHtml(res.error) + '</div>'
+          : '<div class="alert alert-' + (res.warning ? 'warning' : 'success') + '" style="margin:0;"><i class="fa fa-check-circle"></i> ' + escHtml(res.warning || res.success) + '</div>');
+        if (res.diag) { renderDiag(res.diag); }
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        $res.html('<div class="alert alert-danger" style="margin:0;"><i class="fa fa-times-circle"></i> ' + escHtml(L.connError) + '</div>');
+      }
+    });
+  }
+  $('#btn-send-order').on('click', sendOne);
+  $('#input-send-order').on('keydown', function (e) { if (e.which === 13) { e.preventDefault(); e.stopPropagation(); sendOne(); } });
+
+  // ─── Передати всі замовлення (пачками) ───
+  $('#btn-sync-all').on('click', function () {
+    if (!confirm(L.confirmSyncAll)) {
+      return;
+    }
+    var $btn = $(this).prop('disabled', true);
+    var $progress = $('#sync-all-progress');
+    var totalSent = 0;
+
+    function runBatch(after) {
+      $.ajax({
+        url: URL.syncAll + '&after=' + after,
+        type: 'POST',
+        dataType: 'json',
+        success: function (res) {
+          if (res.error) {
+            $progress.html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(res.error) + '</span>');
+            $btn.prop('disabled', false);
+            return;
+          }
+          totalSent += res.sent;
+          var pct = res.total > 0 ? Math.min(100, Math.round(totalSent / res.total * 100)) : 100;
+          $progress.html(
+            '<div class="progress" style="max-width:640px;margin-bottom:4px;"><div class="progress-bar" style="width:' + pct + '%;">' + pct + '%</div></div>' +
+            '<small>' + totalSent + ' / ' + res.total + '</small>'
+          );
+          if (res.done) {
+            $progress.append('<div class="text-success" style="margin-top:6px;"><i class="fa fa-check"></i> ' + escHtml(L.syncAllDone) + '</div>');
+            $btn.prop('disabled', false);
+          } else {
+            runBatch(res.after);
+          }
+        },
+        error: function () {
+          $progress.html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(L.connError) + '</span>');
+          $btn.prop('disabled', false);
+        }
+      });
+    }
+    runBatch(0);
+  });
+
+  // ─── Ключ доступу системи до сайту ───
+  $('#btn-regenerate-inbound').on('click', function () {
+    if (!confirm(L.confirmRegenerate)) {
+      return;
+    }
+    var $btn = $(this).prop('disabled', true);
+    $.ajax({
+      url: URL.regenerate,
+      type: 'POST',
+      dataType: 'json',
+      success: function (res) {
+        $btn.prop('disabled', false);
+        if (res.token) {
+          $('#input-inbound-token').val(res.token);
+          alert(res.success || L.ok);
+        } else {
+          alert(res.error || L.error);
+        }
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        alert(L.connError);
+      }
+    });
+  });
+
+  $('#btn-revoke-old').on('click', function () {
+    if (!confirm(L.confirmRevokeOld)) {
+      return;
+    }
+    var $btn = $(this).prop('disabled', true);
+    $.ajax({
+      url: URL.revokeOld,
+      type: 'POST',
+      dataType: 'json',
+      success: function (res) {
+        $btn.prop('disabled', false);
+        alert(res.success || res.error || L.ok);
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        alert(L.connError);
+      }
+    });
+  });
+
+  $('#btn-copy-inbound').on('click', function () {
+    var el = document.getElementById('input-inbound-token');
+    el.select();
+    el.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    var $i = $(this).find('i').removeClass('fa-copy').addClass('fa-check');
+    setTimeout(function () { $i.removeClass('fa-check').addClass('fa-copy'); }, 1200);
+  });
+
+  // ─── Журнал ───
+  function loadLogs() {
+    $('#logs-container').html('<p class="text-muted"><i class="fa fa-spinner fa-spin"></i></p>');
+    $.ajax({
+      url: URL.logs,
+      type: 'GET',
+      dataType: 'json',
+      success: function (res) {
+        var logs = res.logs || [];
+        if (!logs.length) {
+          $('#logs-container').html('<p class="text-muted"><i class="fa fa-inbox"></i> ' + escHtml(L.noLogs) + '</p>');
+          return;
+        }
+        var html = '<div class="table-responsive"><table class="table table-bordered table-striped table-hover"><thead><tr>' +
+          '<th>' + L.colTime + '</th><th>' + L.colEvent + '</th><th>' + L.colOrder + '</th><th>' + L.colHttp + '</th><th>' + L.colResult + '</th><th>' + L.colMessage + '</th>' +
+          '</tr></thead><tbody>';
+        for (var i = 0; i < logs.length; i++) {
+          var log = logs[i], badge;
+          if (log.result === 'success') badge = '<span class="label label-success">' + L.logOk + '</span>';
+          else if (log.result === 'duplicate') badge = '<span class="label label-warning">' + L.logDup + '</span>';
+          else badge = '<span class="label label-danger">' + L.logFail + '</span>';
+          html += '<tr><td style="white-space:nowrap;">' + escHtml(log.ts || '') + '</td><td>' + escHtml(log.event || '') + '</td>' +
+            '<td>' + escHtml(String(log.order_id || '')) + '</td><td>' + escHtml(String(log.http_code || '')) + '</td><td>' + badge + '</td>' +
+            '<td style="max-width:400px;word-break:break-word;">' + escHtml(log.message || '') + '</td></tr>';
+        }
+        html += '</tbody></table></div>';
+        $('#logs-container').html(html);
+      },
+      error: function () {
+        $('#logs-container').html('<p class="text-danger"><i class="fa fa-exclamation-circle"></i> ' + escHtml(L.error) + '</p>');
+      }
+    });
+  }
+
+  $('#btn-refresh-logs').on('click', loadLogs);
+  $('#btn-clear-logs').on('click', function () {
+    if (!confirm(L.confirmClear)) {
+      return;
+    }
+    $.ajax({ url: URL.clear, type: 'GET', dataType: 'json', success: loadLogs });
+  });
+
+  // ─── Покинутий кошик ───
+  function loadCartStats() {
+    $.ajax({
+      url: URL.cartStats,
+      type: 'GET',
+      dataType: 'json',
+      success: function (res) {
+        var s = (res && res.stats) || {};
+        var box = function (label, val, cls) {
+          return '<div class="col-sm-2 col-xs-4" style="text-align:center;padding:10px;">' +
+            '<div style="font-size:22px;font-weight:bold;" class="' + (cls || '') + '">' + (val || 0) + '</div>' +
+            '<div class="text-muted" style="font-size:12px;">' + label + '</div></div>';
+        };
+        $('#cart-stats').html('<div class="well well-sm"><div class="row">' +
+          box(L.statTotal, s.total, '') + box(L.statOpen, s.open, 'text-info') + box(L.statSent, s.sent, 'text-primary') +
+          box(L.statRecovered, s.recovered, 'text-success') + box(L.statExpired, s.expired, 'text-muted') +
+          box(L.statRate, (s.recovery_rate || 0) + '%', 'text-success') + '</div></div>');
+      },
+      error: function () {
+        $('#cart-stats').html('<p class="text-danger"><i class="fa fa-exclamation-circle"></i> ' + escHtml(L.error) + '</p>');
+      }
+    });
+  }
+
+  // ─── Каталог ───
+  var catNames = {
+    categories: '{{ tab_cat_categories|e('js') }}', attributes: '{{ tab_cat_attributes|e('js') }}', products: '{{ tab_cat_products|e('js') }}',
+    reviews: '{{ tab_cat_reviews|e('js') }}', customers: '{{ tab_cat_customers|e('js') }}'
+  };
+  var jobText = {
+    queued: '{{ text_job_queued|e('js') }}', running: '{{ text_job_running|e('js') }}', done: '{{ text_job_done|e('js') }}',
+    cancelled: '{{ text_job_cancelled|e('js') }}', error: '{{ text_job_error|e('js') }}', stalled: '{{ text_job_stalled|e('js') }}'
+  };
+  var jobCls = { queued: 'default', running: 'primary', done: 'success', cancelled: 'warning', error: 'danger', stalled: 'danger' };
+  var cntText = {
+    created: '{{ text_cnt_created|e('js') }}', updated: '{{ text_cnt_updated|e('js') }}', unchanged: '{{ text_cnt_unchanged|e('js') }}',
+    skipped: '{{ text_cnt_skipped|e('js') }}', errors: '{{ text_cnt_errors|e('js') }}', pruned: '{{ text_cnt_pruned|e('js') }}'
+  };
+  var runText = { started: '{{ text_run_started|e('js') }}', busy: '{{ text_run_busy|e('js') }}', not_supported: '{{ text_run_not_supported|e('js') }}' };
+  var pollTimer = null;
+
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(sec));
+    var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+    return (h ? h + L.unitH + ' ' : '') + (h || m ? m + L.unitM + ' ' : '') + s + L.unitS;
+  }
+
+  $('.btn-catalog-run').on('click', function () {
+    var $btn = $(this);
+    var $box = $btn.closest('.catalog-run');
+    var $res = $box.find('.catalog-run-result');
+    var data = {
+      entity: $btn.data('entity'),
+      force: $box.find('.opt-force').is(':checked') ? 1 : 0,
+      resume: $box.find('.opt-resume').is(':checked') ? 1 : 0,
+      wipe: $box.find('.opt-wipe').is(':checked') ? 1 : 0
+    };
+    if (data.wipe) {
+      if (prompt(L.wipePrompt) !== 'DELETE') {
+        return;
+      }
+      data.confirm = 'DELETE';
+    } else if (data.entity === 'all' && !confirm(L.confirmCatalogAll)) {
+      return;
+    }
+
+    $btn.prop('disabled', true);
+    $res.html('<i class="fa fa-spinner fa-spin"></i>');
+
+    $.ajax({
+      url: URL.catalogRun,
+      type: 'POST',
+      dataType: 'json',
+      data: data,
+      success: function (res) {
+        $btn.prop('disabled', false);
+        $box.find('.opt-wipe').prop('checked', false);
+        if (res.error) {
+          $res.html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(res.error) + '</span>');
+        } else {
+          var parts = [];
+          for (var k in (res.result || {})) {
+            var s = res.result[k].status;
+            parts.push(escHtml(catNames[k] || k) + ': ' + escHtml(runText[s] || s));
+          }
+          $res.html('<span class="text-info">' + parts.join(' · ') + '</span>');
+        }
+        loadCatalogStats();
+      },
+      error: function () {
+        $btn.prop('disabled', false);
+        $res.html('<span class="text-danger"><i class="fa fa-times"></i> ' + escHtml(L.connError) + '</span>');
+      }
+    });
+  });
+
+  $('#catalog-progress').on('click', '.btn-catalog-cancel', function () {
+    var $b = $(this).prop('disabled', true);
+    $.ajax({ url: URL.catalogCancel, type: 'POST', dataType: 'json', data: { entity: $b.data('entity') }, complete: loadCatalogStats });
+  });
+
+  function loadCatalogStats() {
+    clearTimeout(pollTimer);
+    $.ajax({
+      url: URL.catalogStats,
+      type: 'GET',
+      dataType: 'json',
+      success: function (res) {
+        var active = false;
+        var html = '<table class="table table-bordered table-condensed"><thead><tr>' +
+          '<th>' + L.colEntity + '</th><th>' + L.colInShop + '</th><th>' + L.colStatus + '</th><th style="width:28%;">' + L.colProgress + '</th>' +
+          '<th>' + L.colCounters + '</th><th>' + L.colSpeed + '</th><th></th></tr></thead><tbody>';
+
+        for (var k in catNames) {
+          var j = (res.jobs && res.jobs[k]) || null;
+          var st = j ? j.status : '';
+          if (st === 'running' && res.now - (+j.updated_ts) > 600) st = 'stalled';
+          if (st === 'queued' && res.now - (+j.updated_ts) > 60) {
+            st = 'error';
+            j.last_error = j.last_error || L.notStarted;
+          }
+          if (st === 'queued' || st === 'running') active = true;
+
+          var total = j ? +j.total : 0, done = j ? +j.done : 0;
+          var pct = total > 0 ? Math.min(100, Math.floor(done / total * 100)) : (st === 'done' ? 100 : 0);
+          var bar = j ? '<div class="progress" style="margin:0;"><div class="progress-bar' + (st === 'running' ? ' progress-bar-striped active' : '') +
+            (st === 'error' || st === 'stalled' ? ' progress-bar-danger' : (st === 'done' ? ' progress-bar-success' : '')) +
+            '" style="min-width:2.5em;width:' + pct + '%;">' + pct + '%</div></div><small>' + done.toLocaleString() + ' / ' + total.toLocaleString() + '</small>' : '';
+
+          var cnt = [];
+          if (j) {
+            for (var c in cntText) {
+              if (+j[c]) cnt.push((c === 'errors' ? '<span class="text-danger">' : '') + cntText[c] + ' ' + (+j[c]).toLocaleString() + (c === 'errors' ? '</span>' : ''));
+            }
+            if (j.last_error) cnt.push('<br><small class="text-danger">' + escHtml(j.last_error) + '</small>');
+          }
+
+          var speed = '';
+          if (j && j.started_ts && done > 0) {
+            var end = (st === 'running' || st === 'stalled') ? res.now : (+j.finished_ts || res.now);
+            var el = Math.max(1, end - (+j.started_ts));
+            var rate = done / el;
+            speed = rate.toFixed(1) + ' ' + L.perSec + '<br><small>' + (st === 'running' && total > done ? '≈ ' + fmtDur((total - done) / rate) : fmtDur(el)) + '</small>';
+          }
+
+          html += '<tr><td><strong>' + catNames[k] + '</strong></td>' +
+            '<td>' + ((res.counts && res.counts[k]) || 0).toLocaleString() + '</td>' +
+            '<td>' + (st ? '<span class="label label-' + jobCls[st] + '">' + jobText[st] + '</span>' : '<span class="text-muted">' + L.never + '</span>') + '</td>' +
+            '<td>' + bar + '</td><td>' + cnt.join(', ') + '</td><td>' + speed + '</td>' +
+            '<td>' + ((st === 'queued' || st === 'running' || st === 'stalled') ? '<button type="button" class="btn btn-xs btn-danger btn-catalog-cancel" data-entity="' + k + '">' + L.cancel + '</button>' : '') + '</td></tr>';
+        }
+        html += '</tbody></table>';
+        $('#catalog-progress').html(html);
+
+        if (active && $('#tab-catalog').is(':visible')) {
+          pollTimer = setTimeout(loadCatalogStats, 2000);
+        }
+      },
+      error: function () {
+        $('#catalog-progress').html('<p class="text-danger"><i class="fa fa-exclamation-circle"></i> ' + escHtml(L.error) + '</p>');
+      }
+    });
+  }
+
+  $('.nav-tabs a').on('shown.bs.tab', function (e) {
+    var href = $(e.target).attr('href');
+    if (href === '#tab-logs') { loadLogs(); }
+    if (href === '#tab-cart') { loadCartStats(); }
+    if (href === '#tab-catalog') { loadCatalogStats(); }
+  });
+
+});
+//--></script>
+
+<script type="text/javascript"><!--
+// ─── Імпорт у систему ───
+$(function () {
+  var IMP = {
+    api: '{{ import_api|e('js') }}'.replace(/&amp;/g, '&'),
+    meta: '{{ import_site_meta|e('js') }}'.replace(/&amp;/g, '&'),
+    domain: '{{ module_growthcontour_domain|e('js') }}'.replace(/\/+$/, ''),
+    // Адреса збереження; якщо контролер її не передав — будуємо з робочої адреси importApi
+    save: ('{{ import_save|e('js') }}'.replace(/&amp;/g, '&')) || '{{ import_api|e('js') }}'.replace(/&amp;/g, '&').replace('/importApi', '/importSave'),
+    // Налаштування імпорту, збережені на сервері (JSON-рядок)
+    saved: '{{ import_options|e('js') }}'
+  };
+  var T = {
+    error: '{{ error_generic|e('js') }}',
+    conn: '{{ error_connection|e('js') }}',
+    link: '{{ text_imp_rule_link|e('js') }}',
+    auto: '{{ text_imp_auto|e('js') }}',
+    noGroup: '{{ text_imp_group_skip|e('js') }}',
+    allGroups: '{{ text_imp_group_all|e('js') }}',
+    noWarehouse: '{{ text_imp_no_warehouse|e('js') }}',
+    confirmFull: '{{ text_imp_confirm_full|e('js') }}',
+    confirmRollback: '{{ text_imp_confirm_rollback|e('js') }}',
+    started: '{{ text_imp_started|e('js') }}',
+    cancel: '{{ button_imp_cancel|e('js') }}',
+    resume: '{{ button_imp_resume|e('js') }}',
+    rollback: '{{ button_imp_rollback|e('js') }}',
+    report: '{{ button_imp_report|e('js') }}',
+    refresh: '{{ button_imp_refresh|e('js') }}',
+    preview: '{{ text_imp_preview|e('js') }}',
+    none: '{{ text_imp_none|e('js') }}',
+    noRules: '{{ error_imp_rules|e('js') }}',
+    modes: { dry: '{{ text_imp_mode_dry|e('js') }}', trial: '{{ text_imp_mode_trial|e('js') }}', full: '{{ text_imp_mode_full|e('js') }}' },
+    statuses: {
+      queued: '{{ text_imp_st_queued|e('js') }}', running: '{{ text_imp_st_running|e('js') }}', done: '{{ text_imp_st_done|e('js') }}',
+      failed: '{{ text_imp_st_failed|e('js') }}', cancelled: '{{ text_imp_st_cancelled|e('js') }}', interrupted: '{{ text_imp_st_interrupted|e('js') }}',
+      rolling_back: '{{ text_imp_st_rolling_back|e('js') }}', rolled_back: '{{ text_imp_st_rolled_back|e('js') }}'
+    },
+    actions: {
+      create: '{{ text_imp_act_create|e('js') }}', link: '{{ text_imp_act_link|e('js') }}', update: '{{ text_imp_act_update|e('js') }}',
+      skip: '{{ text_imp_act_skip|e('js') }}', error: '{{ text_imp_act_error|e('js') }}'
+    },
+    counters: {
+      created: '{{ text_imp_cnt_created|e('js') }}', linked: '{{ text_imp_cnt_linked|e('js') }}', updated: '{{ text_imp_cnt_updated|e('js') }}',
+      skipped: '{{ text_imp_cnt_skipped|e('js') }}', errors: '{{ text_imp_cnt_errors|e('js') }}', warnings: '{{ text_imp_cnt_warnings|e('js') }}'
+    }
+  };
+  var SITE_FIELDS = ['id', 'model', 'sku', 'ean', 'upc', 'mpn', 'jan', 'isbn'];
+  var CRM_FIELDS = ['id', 'sku', 'model', 'ean', 'upc', 'mpn'];
+  var DEFAULT_MATCH = [{ site: 'link' }, { site: 'sku', crm: 'sku' }, { site: 'model', crm: 'sku' }, { site: 'ean', crm: 'ean' }];
+  var STORE_KEY = 'gc_import_options';
+
+  var sys = null, site = null, loaded = false, poll = null, currentJob = null;
+  var report = { id: 0, action: '', warnings: false, search: '', page: 1 };
+
+  function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  function call(op, payload, done) {
+    $.ajax({
+      url: IMP.api, type: 'POST', dataType: 'json',
+      data: { op: op, payload: JSON.stringify(payload || {}) },
+      success: function (json) { done(json && json.error ? json.error : null, json || {}); },
+      error: function () { done(T.conn, {}); }
+    });
+  }
+
+  function saved() {
+    // Спершу — збережене на сервері (кнопка «Зберегти налаштування»), далі — у браузері
+    try { if (IMP.saved) { return JSON.parse(IMP.saved); } } catch (e) {}
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { return null; }
+  }
+
+  // ─── Правила зіставлення ───
+  function ruleRow(r) {
+    var siteOpts = '<option value="link"' + (r.site === 'link' ? ' selected' : '') + '>' + esc(T.link) + '</option>';
+    $.each(SITE_FIELDS, function (i, f) { siteOpts += '<option value="' + f + '"' + (r.site === f ? ' selected' : '') + '>' + f + '</option>'; });
+    var crmOpts = '';
+    $.each(CRM_FIELDS, function (i, f) { crmOpts += '<option value="' + f + '"' + (r.crm === f ? ' selected' : '') + '>' + f + '</option>'; });
+    return '<tr><td class="imp-n"></td>' +
+      '<td><select class="form-control input-sm imp-site">' + siteOpts + '</select></td>' +
+      '<td class="text-center imp-arrow">&rarr;</td>' +
+      '<td><select class="form-control input-sm imp-crm">' + crmOpts + '</select></td>' +
+      '<td class="text-right"><button type="button" class="btn btn-default btn-xs imp-up"><i class="fa fa-arrow-up"></i></button> ' +
+      '<button type="button" class="btn btn-default btn-xs imp-down"><i class="fa fa-arrow-down"></i></button> ' +
+      '<button type="button" class="btn btn-danger btn-xs imp-del"><i class="fa fa-times"></i></button></td></tr>';
+  }
+  function renumber() {
+    $('#imp-match tr').each(function (i) {
+      $(this).find('.imp-n').text(i + 1);
+      var isLink = $(this).find('.imp-site').val() === 'link';
+      $(this).find('.imp-crm, .imp-arrow').toggle(!isLink);
+    });
+  }
+  function setRules(list) {
+    $('#imp-match').html($.map(list, ruleRow).join(''));
+    renumber();
+  }
+  $('#imp-match-add').on('click', function () { $('#imp-match').append(ruleRow({ site: 'sku', crm: 'sku' })); renumber(); });
+  $('#imp-match').on('change', '.imp-site', renumber);
+  $('#imp-match').on('click', '.imp-del', function () { $(this).closest('tr').remove(); renumber(); });
+  $('#imp-match').on('click', '.imp-up', function () { var tr = $(this).closest('tr'); tr.prev().before(tr); renumber(); });
+  $('#imp-match').on('click', '.imp-down', function () { var tr = $(this).closest('tr'); tr.next().after(tr); renumber(); });
+
+  $('input[name="imp_mode_ui"]').on('change', function () {
+    var m = $('input[name="imp_mode_ui"]:checked').val();
+    if (m === 'full') { $('#imp-limit').val(0); } else if (!parseInt($('#imp-limit').val(), 10)) { $('#imp-limit').val(m === 'trial' ? 20 : 0); }
+  });
+  $('#imp-on-match').on('change', function () { $('#imp-update-fields').toggle($(this).val() === 'update'); });
+
+  // ─── Довідники ───
+  function renderMaps(opts) {
+    var wh = '<option value="">' + esc(T.noWarehouse) + '</option>';
+    $.each(sys.warehouses || [], function (i, w) {
+      wh += '<option value="' + w.id + '"' + (Number(w.id) === Number(opts.id_warehouse || sys.id_default_warehouse) ? ' selected' : '') + '>' + esc(w.name) + '</option>';
+    });
+    $('#imp-warehouse').html(wh);
+
+    var lh = '';
+    $.each(site.languages || [], function (i, l) {
+      var o = '<option value="">' + esc(T.auto) + '</option>';
+      $.each(sys.languages || [], function (j, s) {
+        o += '<option value="' + s.id + '"' + (opts.langs && Number(opts.langs[l.code]) === Number(s.id) ? ' selected' : '') + '>' + esc(s.name + ' (' + s.code + ')') + '</option>';
+      });
+      lh += '<div style="margin-bottom:4px;"><span style="display:inline-block;min-width:160px;">' + esc(l.name + ' (' + l.code + ')') + '</span> &rarr; ' +
+        '<select class="form-control input-sm imp-lang" data-code="' + esc(l.code) + '" style="max-width:260px;display:inline-block;">' + o + '</select></div>';
+    });
+    $('#imp-langs').html(lh);
+
+    var gh = '';
+    $.each(site.customer_groups || [], function (i, g) {
+      var o = '<option value="">' + esc(T.auto) + '</option><option value="0"' + (opts.groups && String(opts.groups[g.id]) === '0' ? ' selected' : '') + '>' + esc(T.allGroups) + '</option>';
+      $.each(sys.customer_groups || [], function (j, s) {
+        o += '<option value="' + s.id + '"' + (opts.groups && Number(opts.groups[g.id]) === Number(s.id) ? ' selected' : '') + '>' + esc(s.name) + '</option>';
+      });
+      o += '<option value="-1"' + (opts.groups && String(opts.groups[g.id]) === '-1' ? ' selected' : '') + '>' + esc(T.noGroup) + '</option>';
+      gh += '<div style="margin-bottom:4px;"><span style="display:inline-block;min-width:160px;">' + esc(g.name) + (Number(g.id) === Number(site.default_customer_group) ? ' *' : '') + '</span> &rarr; ' +
+        '<select class="form-control input-sm imp-group" data-id="' + g.id + '" style="max-width:260px;display:inline-block;">' + o + '</select></div>';
+    });
+    $('#imp-groups').html(gh);
+  }
+
+  function applyOptions(o) {
+    setRules(o.match && o.match.length ? o.match : DEFAULT_MATCH);
+    if (o.sku_from) { $('#imp-sku-from').val(o.sku_from); }
+    if (o.on_new) { $('#imp-on-new').val(o.on_new); }
+    if (o.status_new) { $('#imp-status-new').val(o.status_new); }
+    if (o.on_match) { $('#imp-on-match').val(o.on_match).trigger('change'); }
+    if (o.update) { $('#imp-upd-price').prop('checked', !!o.update.price); $('#imp-upd-stock').prop('checked', !!o.update.stock); $('#imp-upd-status').prop('checked', !!o.update.status); }
+    if (o.update) { $('.imp-upd-content').each(function () { $(this).prop('checked', !!o.update[$(this).data('key')]); }); }
+    if (o.content_mode) { $('#imp-content-mode').val(o.content_mode); }
+    if (o.categories) { $('#imp-categories').val(o.categories); }
+    if (o.brands) { $('#imp-brands').val(o.brands); }
+    if (o.attributes) { $('#imp-attributes').val(o.attributes); }
+    if (o.options) { $('#imp-options').val(o.options); }
+    if (o.related !== undefined) { $('#imp-related').prop('checked', !!o.related); }
+    if (o.images !== undefined) { $('#imp-images').prop('checked', !!o.images); }
+    if (o.link_site !== undefined) { $('#imp-link-site').prop('checked', !!o.link_site); }
+  }
+
+  function collect() {
+    var match = [];
+    $('#imp-match tr').each(function () {
+      var s = $(this).find('.imp-site').val();
+      match.push(s === 'link' ? { site: 'link' } : { site: s, crm: $(this).find('.imp-crm').val() });
+    });
+    var langs = {};
+    $('.imp-lang').each(function () { if ($(this).val()) { langs[$(this).data('code')] = parseInt($(this).val(), 10); } });
+    var groups = {};
+    $('.imp-group').each(function () { if ($(this).val() !== '') { groups[$(this).data('id')] = parseInt($(this).val(), 10); } });
+    var ids = $.map(String($('#imp-ids').val() || '').split(/[\s,;]+/), function (x) { var n = parseInt(x, 10); return n > 0 ? n : null; });
+    return {
+      limit: parseInt($('#imp-limit').val(), 10) || 0,
+      ids: ids,
+      match: match,
+      sku_from: $('#imp-sku-from').val(),
+      on_new: $('#imp-on-new').val(),
+      status_new: $('#imp-status-new').val(),
+      on_match: $('#imp-on-match').val(),
+      update: (function () {
+        var u = { price: $('#imp-upd-price').is(':checked'), stock: $('#imp-upd-stock').is(':checked'), status: $('#imp-upd-status').is(':checked') };
+        $('.imp-upd-content').each(function () { u[$(this).data('key')] = $(this).is(':checked'); });
+        return u;
+      })(),
+      content_mode: $('#imp-content-mode').val(),
+      categories: $('#imp-categories').val(),
+      brands: $('#imp-brands').val(),
+      attributes: $('#imp-attributes').val(),
+      options: $('#imp-options').val(),
+      related: $('#imp-related').is(':checked'),
+      images: $('#imp-images').is(':checked'),
+      link_site: $('#imp-link-site').is(':checked'),
+      id_warehouse: parseInt($('#imp-warehouse').val(), 10) || null,
+      langs: langs,
+      groups: groups
+    };
+  }
+
+  function load() {
+    if (loaded) { refresh(); return; }
+    $('#imp-job').html('<i class="fa fa-spinner fa-spin"></i>');
+    $.getJSON(IMP.meta, function (m) {
+      site = m;
+      call('options', {}, function (err, json) {
+        if (err) {
+          // Форму показуємо й без довідників системи (мови сайту — «Автоматично»), помилку — помітно, з повтором
+          sys = { warehouses: [], languages: [], customer_groups: [] };
+          renderMaps(saved() || {});
+          applyOptions(saved() || {});
+          $('#imp-job').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + esc(err) +
+            ' <button type="button" class="btn btn-default btn-xs" id="imp-retry"><i class="fa fa-refresh"></i> ' + esc(T.refresh) + '</button></div>');
+          $('#imp-retry').on('click', load);
+          return;
+        }
+        sys = json;
+        if (json.match_site_fields) { SITE_FIELDS = json.match_site_fields; }
+        if (json.match_crm_fields) { CRM_FIELDS = json.match_crm_fields; }
+        if (json.default_match) { DEFAULT_MATCH = json.default_match; }
+        var o = saved() || {};
+        renderMaps(o);
+        applyOptions(o);
+        loaded = true;
+        refresh();
+      });
+    }).fail(function () { $('#imp-job').html('<p class="text-danger">' + esc(T.conn) + '</p>'); });
+  }
+
+  // ─── Запуск / керування ───
+  $('#imp-start').on('click', function () {
+    var mode = $('input[name="imp_mode_ui"]:checked').val();
+    var o = collect();
+    if (!o.match.length) { $('#imp-start-result').html('<span class="text-danger">' + esc(T.noRules) + '</span>'); return; }
+    if (mode === 'full' && !confirm(T.confirmFull)) { return; }
+    persist(o, mode);
+    var $b = $(this).prop('disabled', true);
+    $('#imp-start-result').html('<i class="fa fa-spinner fa-spin"></i>');
+    call('start', { mode: mode, options: o }, function (err, json) {
+      $b.prop('disabled', false);
+      if (err) { $('#imp-start-result').html('<span class="text-danger"><i class="fa fa-exclamation-circle"></i> ' + esc(err) + '</span>'); return; }
+      $('#imp-start-result').html('<span class="text-success">' + esc(T.started.replace('%s', json.id)) + '</span>');
+      report.id = json.id; report.page = 1;
+      refresh(json.id);
+    });
+  });
+
+  function control(op, id) {
+    if (op === 'rollback' && !confirm(T.confirmRollback)) { return; }
+    var payload = op === 'resume' ? { resume_id: id } : { id: id };
+    call(op === 'resume' ? 'start' : op, payload, function (err) {
+      if (err) { alertBox(err); }
+      refresh(id);
+    });
+  }
+  function alertBox(msg) { $('#imp-job').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + esc(msg) + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>'); }
+
+  $('#imp-job').on('click', '[data-op]', function () { control($(this).data('op'), $(this).data('id')); });
+  $('#imp-jobs').on('click', 'tr[data-id]', function () { report.id = $(this).data('id'); report.page = 1; refresh(report.id); });
+
+  function counters(j) {
+    var out = [];
+    $.each(T.counters, function (k, label) { if (j[k]) { out.push(label + ': <b>' + j[k] + '</b>'); } });
+    return out.length ? out.join(' &middot; ') : T.none;
+  }
+
+  function renderJob(j) {
+    if (!j) { $('#imp-job').html('<p class="text-muted">' + esc(T.none) + '</p>'); return; }
+    currentJob = j;
+    var pct = j.total ? Math.min(100, Math.round(j.processed * 100 / j.total)) : (j.status === 'done' ? 100 : 0);
+    var active = j.status === 'running' || j.status === 'queued' || j.status === 'rolling_back';
+    var bar = j.status === 'failed' ? 'danger' : (j.status === 'done' || j.status === 'rolled_back' ? 'success' : 'info');
+    var h = '<p><b>#' + j.id + '</b> &middot; ' + esc(T.modes[j.mode] || j.mode) + ' &middot; ' + esc(T.statuses[j.status] || j.status) + '</p>' +
+      '<div class="progress" style="margin-bottom:6px;"><div class="progress-bar progress-bar-' + bar + (active ? ' progress-bar-striped active' : '') + '" style="width:' + pct + '%;">' + j.processed + (j.total ? ' / ' + j.total : '') + '</div></div>' +
+      '<p>' + counters(j) + '</p>';
+    if (j.message) { h += '<p class="' + (j.status === 'failed' ? 'text-danger' : 'text-muted') + '">' + esc(j.message) + '</p>'; }
+    h += '<div>';
+    if (active && j.status !== 'rolling_back') { h += '<button type="button" class="btn btn-warning btn-sm" data-op="cancel" data-id="' + j.id + '"><i class="fa fa-stop"></i> ' + esc(T.cancel) + '</button> '; }
+    if (j.can_resume) { h += '<button type="button" class="btn btn-primary btn-sm" data-op="resume" data-id="' + j.id + '"><i class="fa fa-play"></i> ' + esc(T.resume) + '</button> '; }
+    if (j.can_rollback) { h += '<button type="button" class="btn btn-danger btn-sm" data-op="rollback" data-id="' + j.id + '"><i class="fa fa-undo"></i> ' + esc(T.rollback) + '</button> '; }
+    h += '<button type="button" class="btn btn-default btn-sm" id="imp-refresh"><i class="fa fa-refresh"></i> ' + esc(T.refresh) + '</button></div>';
+    $('#imp-job').html(h);
+    $('#imp-refresh').on('click', function () { refresh(j.id); });
+
+    clearTimeout(poll);
+    if (active) { poll = setTimeout(function () { refresh(j.id); }, 3000); }
+  }
+
+  function renderJobs(list) {
+    var h = '';
+    $.each(list || [], function (i, j) {
+      h += '<tr data-id="' + j.id + '" style="cursor:pointer;"' + (currentJob && currentJob.id === j.id ? ' class="info"' : '') + '><td>' + j.id + '</td><td>' + esc(T.modes[j.mode] || j.mode) + '</td><td>' + esc(T.statuses[j.status] || j.status) + '</td>' +
+        '<td>' + j.processed + (j.total ? ' / ' + j.total : '') + '</td><td><small>' + counters(j) + '</small></td><td><small>' + esc(j.date_add || '') + '</small></td></tr>';
+    });
+    $('#imp-jobs').html(h || '<tr><td colspan="6" class="text-muted">' + esc(T.none) + '</td></tr>');
+  }
+
+  function refresh(id) {
+    call('status', id ? { id: id } : {}, function (err, json) {
+      if (err) { $('#imp-job').html('<p class="text-danger"><i class="fa fa-exclamation-circle"></i> ' + esc(err) + '</p>'); return; }
+      renderJob(json.job);
+      renderJobs(json.jobs);
+      if (json.job) {
+        if (!report.id || report.id !== json.job.id) { report.id = json.job.id; report.page = 1; }
+        loadItems();
+      }
+    });
+  }
+
+  // ─── Звіт по товарах ───
+  function previewHtml(p) {
+    if (!p) { return ''; }
+    var rows = '';
+    $.each(p, function (k, v) {
+      if (k === 'descriptions') {
+        $.each(v || {}, function (lang, d) {
+          rows += '<tr><th>' + esc(lang) + '</th><td><b>' + esc(d.name) + '</b>' + (d.slug ? ' &middot; /' + esc(d.slug) : '') + (d.meta_title ? '<br><small>' + esc(d.meta_title) + '</small>' : '') + (d.description ? '<br><small class="text-muted">' + esc(d.description) + '</small>' : '') + '</td></tr>';
+        });
+      } else if (v !== null && v !== '' && !(v instanceof Array && !v.length)) {
+        rows += '<tr><th>' + esc(k) + '</th><td>' + esc(v instanceof Array ? v.join(', ') : v) + '</td></tr>';
+      }
+    });
+    return '<table class="table table-condensed" style="margin:4px 0;background:#fafafa;">' + rows + '</table>';
+  }
+
+  function loadItems() {
+    if (!report.id) { return; }
+    $('#imp-report').show();
+    $('#imp-report-title').text('#' + report.id);
+    call('items', { id: report.id, action: report.action, warnings: report.warnings ? 1 : 0, search: report.search, page: report.page, limit: 50 }, function (err, json) {
+      if (err) { $('#imp-items').html('<tr><td colspan="7" class="text-danger">' + esc(err) + '</td></tr>'); return; }
+      var cls = { create: 'success', link: 'info', update: 'warning', skip: 'default', error: 'danger' };
+      var h = '';
+      $.each(json.items || [], function (i, r) {
+        var crm = r.id_product ? (IMP.domain ? '<a href="' + esc(IMP.domain) + '/catalog/products/' + r.id_product + '/" target="_blank">#' + r.id_product + '</a>' : '#' + r.id_product) : '';
+        var msg = esc(r.message || '');
+        if (r.warnings && r.warnings.length) { msg += '<br><small class="text-warning"><i class="fa fa-exclamation-triangle"></i> ' + $.map(r.warnings, esc).join('<br>') + '</small>'; }
+        if (r.preview) { msg += '<br><a href="javascript:void(0)" class="imp-preview-toggle"><small>' + esc(T.preview) + '</small></a><div class="imp-preview" style="display:none;">' + previewHtml(r.preview) + '</div>'; }
+        h += '<tr><td>' + r.external_id + '</td><td>' + esc(r.external_sku || '') + '</td><td>' + esc(r.name || '') + '</td>' +
+          '<td><span class="label label-' + (cls[r.action] || 'default') + '">' + esc(T.actions[r.action] || r.action) + '</span></td>' +
+          '<td><small>' + esc(r.matched_by || '') + '</small></td><td>' + crm + '</td><td>' + msg + '</td></tr>';
+      });
+      $('#imp-items').html(h || '<tr><td colspan="7" class="text-muted">' + esc(T.none) + '</td></tr>');
+      var pg = '';
+      if (json.pages > 1) {
+        pg = '<ul class="pagination pagination-sm" style="margin:0;">';
+        var from = Math.max(1, json.page - 4), to = Math.min(json.pages, json.page + 4);
+        if (from > 1) { pg += '<li><a href="javascript:void(0)" data-page="1">1</a></li>'; }
+        for (var p = from; p <= to; p++) { pg += '<li' + (p === json.page ? ' class="active"' : '') + '><a href="javascript:void(0)" data-page="' + p + '">' + p + '</a></li>'; }
+        if (to < json.pages) { pg += '<li><a href="javascript:void(0)" data-page="' + json.pages + '">' + json.pages + '</a></li>'; }
+        pg += '</ul>';
+      }
+      $('#imp-pager').html(pg + ' <small class="text-muted">' + json.total + '</small>');
+    });
+  }
+  $('#imp-items').on('click', '.imp-preview-toggle', function () { $(this).next('.imp-preview').toggle(); });
+  $('#imp-pager').on('click', 'a[data-page]', function () { report.page = parseInt($(this).data('page'), 10); loadItems(); });
+  $('#imp-filter').on('click', 'button', function () {
+    $('#imp-filter button').removeClass('active');
+    $(this).addClass('active');
+    var a = $(this).data('action');
+    report.warnings = a === 'warnings';
+    report.action = a === 'warnings' ? '' : a;
+    report.page = 1;
+    loadItems();
+  });
+  var searchTimer = null;
+  $('#imp-search').on('input', function () {
+    clearTimeout(searchTimer);
+    var v = $(this).val();
+    searchTimer = setTimeout(function () { report.search = v; report.page = 1; loadItems(); }, 400);
+  });
+
+  // Enter у полях вкладки не має надсилати форму налаштувань
+  $('#tab-import').on('keydown', 'input', function (e) { if (e.which === 13) { e.preventDefault(); } });
+
+  // ─── Збереження налаштувань імпорту на сервері ───
+  function persist(o, mode, done) {
+    var data = $.extend({}, o, { ui_mode: mode });
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {}
+    $.ajax({
+      url: IMP.save, type: 'POST', dataType: 'json',
+      data: { options: JSON.stringify(data) },
+      success: function (json) { if (done) { done(json && json.error ? json.error : null); } },
+      error: function () { if (done) { done(T.conn); } }
+    });
+  }
+  // Налаштування імпорту зберігаються кнопкою «Зберегти» вгорі — лише якщо вкладку відкривали (форма заповнена)
+  window.GC_SAVE = window.GC_SAVE || [];
+  window.GC_SAVE.push(function () {
+    if (!loaded) { return null; }
+    var data = $.extend({}, collect(), { ui_mode: $('input[name="imp_mode_ui"]:checked').val() });
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {}
+    return { gc_import_options: JSON.stringify(data) };
+  });
+
+  $('.nav-tabs a[href="#tab-import"]').on('shown.bs.tab', load);
+  if (window.location.hash === '#tab-import') { $('.nav-tabs a[href="#tab-import"]').tab('show'); }
+});
+//--></script>
+
+<script type="text/javascript"><!--
+// ─── Доставка: правила розбору й останні знімки ───
+$(function () {
+  var U = {
+    list: '{{ delivery_list|e('js') }}'.replace(/&amp;/g, '&'),
+    raw: '{{ delivery_raw|e('js') }}'.replace(/&amp;/g, '&'),
+    test: '{{ delivery_test|e('js') }}'.replace(/&amp;/g, '&'),
+    reparse: '{{ delivery_reparse|e('js') }}'.replace(/&amp;/g, '&')
+  };
+  var T = {
+    conn: '{{ error_connection|e('js') }}',
+    none: '{{ text_delivery_empty_list|e('js') }}',
+    raw: '{{ button_delivery_raw|e('js') }}',
+    st: { ok: '{{ text_delivery_st_ok|e('js') }}', partial: '{{ text_delivery_st_partial|e('js') }}', empty: '{{ text_delivery_st_empty|e('js') }}', none: '{{ text_delivery_st_none|e('js') }}' }
+  };
+  var CLS = { ok: 'success', partial: 'warning', empty: 'danger', none: 'default' };
+  var status = '', loaded = false;
+
+  function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function msg(type, text) { $('#dlv-result').html('<div class="alert alert-' + type + '" style="margin:0;">' + text + '</div>'); }
+
+  function load() {
+    $.getJSON(U.list + '&status=' + encodeURIComponent(status), function (json) {
+      if (json.error) { return msg('danger', esc(json.error)); }
+      if (!loaded) { $('#dlv-rules').val(json.rules || ''); loaded = true; }
+      $('#dlv-filter button').each(function () {
+        var s = $(this).data('status');
+        var n = s ? (json.counts[s] || 0) : null;
+        $(this).find('.badge').remove();
+        if (n !== null) { $(this).append(' <span class="badge">' + n + '</span>'); }
+      });
+      var h = '';
+      $.each(json.rows || [], function (i, r) {
+        var point = r.service === 'address' ? [r.street, r.building].filter(Boolean).join(', ') : (r.point || (r.point_number ? '№' + r.point_number : ''));
+        h += '<tr><td>' + r.order_id + '</td>' +
+          '<td><small>' + esc(r.method_code) + '</small><br>' + esc(r.shipping_method || '') + '</td>' +
+          '<td><span class="label label-' + (CLS[r.status] || 'default') + '">' + esc(T.st[r.status] || r.status) + '</span>' + (r.service ? '<br><small>' + esc(r.carrier + ' / ' + r.service) + '</small>' : '') + '</td>' +
+          '<td>' + esc(r.city || '') + (r.city_ref ? '<br><small class="text-muted">' + esc(r.city_ref) + '</small>' : '') + '</td>' +
+          '<td>' + esc(point) + (r.point_ref ? '<br><small class="text-muted">' + esc(r.point_ref) + '</small>' : '') + '</td>' +
+          '<td><small>' + esc(r.found_by || '') + '</small></td>' +
+          '<td><button type="button" class="btn btn-default btn-xs dlv-raw" data-id="' + r.order_id + '">' + esc(T.raw) + '</button></td></tr>' +
+          '<tr class="dlv-raw-row" data-for="' + r.order_id + '" style="display:none;"><td colspan="7"><pre style="max-height:400px;overflow:auto;font-size:11px;"></pre></td></tr>';
+      });
+      $('#dlv-rows').html(h || '<tr><td colspan="7" class="text-muted">' + esc(T.none) + '</td></tr>');
+    }).fail(function () { msg('danger', esc(T.conn)); });
+  }
+
+  $('#dlv-rows').on('click', '.dlv-raw', function () {
+    var id = $(this).data('id');
+    var $row = $('#dlv-rows tr[data-for="' + id + '"]');
+    if ($row.is(':visible')) { $row.hide(); return; }
+    $.getJSON(U.raw + '&order_id=' + id, function (json) {
+      $row.find('pre').text(JSON.stringify(json.raw, null, 2));
+      $row.show();
+    });
+  });
+  $('#dlv-filter').on('click', 'button', function () {
+    $('#dlv-filter button').removeClass('active');
+    $(this).addClass('active');
+    status = $(this).data('status') || '';
+    load();
+  });
+
+  // Правила зберігаються кнопкою «Зберегти» вгорі — лише якщо вкладку відкривали (інакше поле ще порожнє)
+  window.GC_SAVE = window.GC_SAVE || [];
+  window.GC_SAVE.push(function () { return loaded ? { gc_delivery_rules: $('#dlv-rules').val() } : null; });
+  $('#dlv-test').on('click', function () {
+    $.post(U.test, { rules: $('#dlv-rules').val(), order_id: $('#dlv-test-id').val() }, function (json) {
+      if (json.error) { return msg('danger', esc(json.error)); }
+      msg('info', '<pre style="margin:0;background:none;border:0;">' + esc(JSON.stringify(json.result, null, 2)) + '</pre>');
+    }, 'json').fail(function () { msg('danger', esc(T.conn)); });
+  });
+  $('#dlv-reparse').on('click', function () {
+    var $b = $(this).prop('disabled', true);
+    $.post(U.reparse, { count: $('#dlv-reparse-n').val() }, function (json) {
+      $b.prop('disabled', false);
+      if (json.error) { return msg('danger', esc(json.error)); }
+      var parts = [];
+      $.each(json.stat || {}, function (k, v) { parts.push((T.st[k] || k) + ': ' + v); });
+      msg('success', esc(json.success) + (parts.length ? ' — ' + esc(parts.join(', ')) : ''));
+      load();
+    }, 'json').fail(function () { $b.prop('disabled', false); msg('danger', esc(T.conn)); });
+  });
+  $('#dlv-rules, #dlv-test-id, #dlv-reparse-n').on('keydown', function (e) { if (e.which === 13 && this.tagName !== 'TEXTAREA') { e.preventDefault(); } });
+
+  $('.nav-tabs a[href="#tab-delivery"]').on('shown.bs.tab', load);
+  if (window.location.hash === '#tab-delivery') { $('.nav-tabs a[href="#tab-delivery"]').tab('show'); }
+});
+//--></script>
+
+{{ footer }}
